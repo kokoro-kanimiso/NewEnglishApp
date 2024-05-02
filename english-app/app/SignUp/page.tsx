@@ -10,6 +10,7 @@ import FormInput from "../common/FormInput";
 import { StyledButton } from "../common/Button";
 import { error } from "console";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const StyledLoginWrapper = styled.div`
   padding-top: 30px;
@@ -33,13 +34,21 @@ const Login = () => {
     formState: { errors },
   } = useForm<IFormInput>();
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     console.log(data);
     console.log("Login start");
 
-    const response = await axios.post("http://localhost:8080/api/signup", {name: "aaa", password: "tttttttt", birthday: "2025-12-23"});
-    console.log("responseの中身: ", response);
-    console.log("Login end");
+    try {
+      const response = await axios.post("http://localhost:8080/api/signup", {name: "", password: "", birthday: "2024-12-12"});
+      console.log("responseの中身: ", response);
+      console.log("Login end");
+      
+    } catch (error) {
+      console.log("error contents: ",error);
+      router.push("/ErrorPage");
+    }
   };
 
   return (
