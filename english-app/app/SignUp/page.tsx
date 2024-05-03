@@ -26,7 +26,7 @@ type IFormInput = {
   birthday: string;
 };
 
-const Login = () => {
+const SignUp = () => {
   const {
     control,
     handleSubmit,
@@ -167,4 +167,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
