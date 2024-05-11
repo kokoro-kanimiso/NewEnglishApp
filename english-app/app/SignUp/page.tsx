@@ -11,6 +11,8 @@ import { StyledButton } from "../common/Button";
 import { error } from "console";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { StyledBorderBottomDiv } from "../common/StyledBorderBottomDiv";
+import Link from "next/link";
 
 const StyledLoginWrapper = styled.div`
   padding-top: 30px;
@@ -37,16 +39,14 @@ const SignUp = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
-    console.log("Login start");
+    console.log("SignUp start");
 
     try {
-      const response = await axios.post("http://localhost:8080/api/signup", {name: "", password: "", birthday: "2024-12-12"});
+      const response = await axios.post("http://localhost:8080/api/signup", data);
       console.log("responseの中身: ", response);
-      console.log("Login end");
-      
+      console.log("SignUp end");
     } catch (error) {
-      console.log("error contents: ",error);
+      console.log("error contents: ", error);
       router.push("/ErrorPage");
     }
   };
@@ -56,7 +56,10 @@ const SignUp = () => {
       <StyledCommonWrapper>
         <StyledContainer>
           <StyledLoginWrapper>
-            <StyledTitle>SignUp</StyledTitle>
+            <StyledBorderBottomDiv>
+              <StyledTitle>SignUp</StyledTitle>
+              <Link href="/InitialScreen" style={{fontSize: "1.5rem",display: "inline-block", marginBottom: "10px"}}>Back to Initial Page</Link>
+            </StyledBorderBottomDiv>
             <StyledLoginForm onSubmit={handleSubmit(onSubmit)}>
               <Controller
                 name="name"
