@@ -29,7 +29,6 @@ const StyledLoginForm = styled.form`
 type IFormInput = {
   name: string;
   password: string;
-  birthday: string;
 };
 
 const Login = () => {
