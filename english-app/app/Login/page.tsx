@@ -27,7 +27,7 @@ const StyledLoginForm = styled.form`
 `;
 
 type IFormInput = {
-  name: string;
+  id: string;
   password: string;
 };
 
@@ -46,14 +46,17 @@ const Login = () => {
     console.log(data);
     console.log("Login start");
 
+    const SESSION_KEY : string = "ID"; 
+
     try {
       const response = await axios.post("http://localhost:8080/api/login", data);
       console.log("responseの中身: ", response);
-      if(response.data === "Login fail"){
+      if(response.data.message === "Login fail"){
         setLoginFailStatus(true);
         console.log("Login end");
       }else{
         console.log("Login end");
+        sessionStorage.setItem(SESSION_KEY, response.data.id);
         setLoginFailStatus(false);
         router.push("/AppStart");
       }
@@ -77,20 +80,24 @@ const Login = () => {
             {loginFailStatus ? <div style={{color: "red", fontSize: "1.5rem", marginTop: "20px"}}>Login failed, check entered name and password</div> : ""}
             <StyledLoginForm onSubmit={handleSubmit(onSubmit)}>
               <Controller
-                name="name"
+                name="id"
                 control={control}
                 rules={{
-                  required: "Name is required"
+                  required: "ID is required",
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "Only numbers are allowed"
+                  }
                 }}
                 render={({ field }) => (
                   <FormInput
                     {...field}
-                    title="Please enter your name"
+                    title="Please enter your ID"
                     type="text"
                   />
                 )}
               />
-              {errors.name && (
+              {errors.id && (
                 <p
                   style={{
                     fontSize: "1.5rem",
@@ -98,7 +105,7 @@ const Login = () => {
                     textAlign: "left",
                   }}
                 >
-                  {errors.name.message}
+                  {errors.id.message}
                 </p>
               )}
 
