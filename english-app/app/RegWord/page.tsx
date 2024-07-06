@@ -32,6 +32,15 @@ type IFormInput = {
   incorrectOption3: string;
 };
 
+type newData = {
+    word: string;
+    correctOption: string;
+    incorrectOption1: string;
+    incorrectOption2: string;
+    incorrectOption3: string;
+    userId?: string;
+  };
+
 const RegWord = () => {
   const {
     control,
@@ -46,19 +55,17 @@ const RegWord = () => {
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     console.log("data:", data);
     console.log("RegWord start");
+    const newData : newData = {...data};
+
+    const id : any = sessionStorage.getItem("ID");
+    if(id !== null || id !== ""){
+        newData.userId = id;
+        console.log("newData : ",newData);
+    }
 
     try {
-      const response = await axios.post("http://localhost:8080/api/login", data);
+      const response = await axios.post("http://localhost:8080/api/regWord", newData);
       console.log("responseの中身: ", response);
-      if(response.data === "Login fail"){
-        setRegWordFailStatus(true);
-        console.log("RegWord end");
-      }else{
-        console.log("RegWord end");
-        setRegWordFailStatus(false);
-        router.push("/AppStart");
-      }
-      
     } catch (error) {
       console.log("error contents: ",error);
       router.push("/ErrorPage");
@@ -119,10 +126,6 @@ const RegWord = () => {
                   maxLength: {
                     value: 50,
                     message: "CorrectOption must be less than 50 characters"
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: "Only alphabetic characters are allowed"
                   }
                 }}
                 render={({ field }) => (
@@ -152,10 +155,6 @@ const RegWord = () => {
                   maxLength: {
                     value: 50,
                     message: "incorrectOption must be less than 50 characters"
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: "Only alphabetic characters are allowed"
                   }
                 }}
                 render={({ field }) => (
@@ -186,10 +185,6 @@ const RegWord = () => {
                   maxLength: {
                     value: 50,
                     message: "incorrectOption2 must be less than 50 characters"
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: "Only alphabetic characters are allowed"
                   }
                 }}
                 render={({ field }) => (
@@ -219,10 +214,6 @@ const RegWord = () => {
                   maxLength: {
                     value: 50,
                     message: "incorrectOption3 must be less than 50 characters"
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: "Only alphabetic characters are allowed"
                   }
                 }}
                 render={({ field }) => (

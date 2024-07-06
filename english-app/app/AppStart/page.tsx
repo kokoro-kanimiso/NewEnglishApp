@@ -7,10 +7,20 @@ import { StyledBorderBottomDiv } from "../common/StyledBorderBottomDiv";
 import { StyledTitle } from "../common/Title";
 import { StyledButton } from "../common/Button";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const AppStart = () => {
+  const router = useRouter();
 
-    const router = useRouter();
+  useEffect(() => {
+    const id : any = sessionStorage.getItem("ID");
+    console.log("ID : ", id);
+
+    if(id === null || id === ""){
+      router.push("/Login");
+    }
+  },[]);
+
 
     const goToRegisterWordPage = () => {
         router.push("/RegWord")
