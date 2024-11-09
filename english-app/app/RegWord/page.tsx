@@ -66,6 +66,7 @@ const RegWord = () => {
     try {
       const response = await axios.post("http://localhost:8080/api/regWord", newData);
       console.log("responseの中身: ", response);
+      router.push("/RegSuccess");
     } catch (error) {
       console.log("error contents: ",error);
       router.push("/ErrorPage");

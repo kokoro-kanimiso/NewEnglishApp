@@ -21,6 +21,9 @@ const AppStart = () => {
     }
   },[]);
 
+    const goToStartAppPage = () => {
+      router.push("/StartApp");
+    }
 
     const goToRegisterWordPage = () => {
         router.push("/RegWord")
@@ -33,7 +36,7 @@ const AppStart = () => {
               <StyledTitle>Kera App</StyledTitle>
               {/* <Link href="/InitialScreen" style={{fontSize: "1.5rem",display: "inline-block", marginBottom: "10px"}}>Back to Initial Page</Link> */}
             </StyledBorderBottomDiv>
-            <StyledButton style={{marginTop: "50px"}}>Let's start app!!</StyledButton>
+            <StyledButton style={{marginTop: "50px"}} onClick={goToStartAppPage}>Let's start app!!</StyledButton>
             <StyledButton style={{marginTop: "50px"}} onClick={goToRegisterWordPage}>Register new word</StyledButton>
         </StyledContainer>
       </StyledCommonWrapper>
