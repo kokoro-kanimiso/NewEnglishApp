@@ -5,33 +5,11 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import QuestionComponent from "./components/QuestionStyle";
 import { set } from "react-hook-form";
-
-const QuestionStyle = styled.div`
-  width: 50%;
-  margin: 0 auto;
-  text-align: center;
-`;
-
-const Word = styled.h1`
-  font-size: 4rem;
-`;
-
-const AnswerBtn = styled.input`
-  display: block;
-  width: 100px;
-  padding: 5px 10px;
-  margin: 0 auto;
-`;
+import ResultComponent from "./components/ResultStyle";
+import { useRouter } from "next/navigation";
 
 type userIdData = {
   userId: string;
-};
-
-type IFormInput = {
-  correct?: string;
-  incorrect1?: string;
-  incorrect2?: string;
-  incorrect3?: string;
 };
 
 export type questionListData = {
@@ -44,6 +22,12 @@ export type questionListData = {
   [key: string]: string;
 };
 
+export type questionAndAnswerData = {
+  word: string;
+  correct: string;
+  answer: string;
+}
+
 const StartApp = () => {
   const [questionList, setQuestionlist] = useState<questionListData[]>([]);
   const [optionsList, setOptionsList] = useState<string[]>([
@@ -53,22 +37,28 @@ const StartApp = () => {
     "incorrect3",
   ]);
   const [currentQuestionNum, setCurrentQuestionNum] = useState<string>("0");
+  const [correctNum, setCorrectNum] = useState<number>(0);
+  const [mistakeWordMap, setMistakeWordMap] = useState<Map<string, string>>(new Map<string, string>());
+  const [questionAndAnswerInfoMap, setQuestionAndAnswerInfoMap ] = useState<Map<string, questionAndAnswerData>>(new Map<string, questionAndAnswerData>());
 
-  const [answeredFlag, setAnsweredFlag] = useState<string>("");
-
-  let correctFlg: string = "0";
+  const router = useRouter();
 
   useEffect(() => {
     console.log("startApp start");
 
     const fetchData = async () => {
       const userIdData: userIdData = { userId: "27" };
-      const result = await axios.post(
-        "http://localhost:8080/api/StartApp",
-        userIdData
-      );
-
-      setQuestionlist(result.data);
+      try {
+        const result = await axios.post(
+          "http://localhost:8080/api/StartApp",
+          userIdData
+        );
+  
+        setQuestionlist(result.data);
+        
+      } catch (error) {
+        router.push("/ErrorPage")
+      }
     };
 
     const shuffleArray = () => {
@@ -85,20 +75,25 @@ const StartApp = () => {
     shuffleArray();
   }, []);
 
-  const checkAnswer = (answer: string) => {
+  const checkAnswer = (answer: string, word: string, userAnswer: string, correct: string) => {
     if (answer === "correct") {
-      correctFlg = "";
-    } else {
+      setCorrectNum(prev => prev + 1);
+      alert("answer is " + correct +"\n"+"goodJob!!");
+    } else{
+      mistakeWordMap.set(word, word);
+      setMistakeWordMap(mistakeWordMap);
+      alert("answer is " + correct +"\n"+"Do your best next!!");
     }
-    alert("answer is " + answer);
-    console.log("questionNum", currentQuestionNum);
     setCurrentQuestionNum((prev) => String(Number(prev) + 1));
-    setAnsweredFlag("1");
+
+    questionAndAnswerInfoMap.set(word, {word: word,
+      correct: correct,
+      answer: userAnswer});
   };
 
   return (
     <>
-      {currentQuestionNum === "10" ? (<h1>終了</h1>) : (questionList.map((ab, index) => {
+      {currentQuestionNum === "10" ? (<ResultComponent correctNum={correctNum} mistakeWordMap={mistakeWordMap} questionListData={questionList} questionAndAnswerInfoMap={questionAndAnswerInfoMap} />) : (questionList.map((ab, index) => {
         return (
           <QuestionComponent
             key={index}
